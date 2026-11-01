@@ -3,7 +3,7 @@
 // ─────────────────────────────────────────────────────────────
 window.AEDITS_CONFIG = {
   // Where enquiries should go (also used for the email link on the page)
-  email: 'your@email.com',
+  email: 'karhchikingsley1@gmail.com',
 
   // Free access key from https://web3forms.com (enter your email there, they send you a key).
   // Leave empty and the form will open the visitor's email app instead.
