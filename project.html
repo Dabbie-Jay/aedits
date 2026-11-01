@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Project · AEDITS</title>
+<meta name="theme-color" content="#420080">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23420080'/%3E%3Ctext x='32' y='45' font-family='Arial' font-weight='900' font-size='38' text-anchor='middle' fill='%23ada701'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Open+Sans:wght@600..800&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="colorbar" aria-hidden="true"><div></div><div></div><div></div><div></div></div>
+
+<header class="wrap header">
+  <a href="index.html" class="logo">AEDITS</a>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  <nav id="site-nav" class="nav" aria-label="Main">
+    <a href="index.html#work">Work</a>
+    <a href="index.html#services">Services</a>
+    <a href="index.html#about">About</a>
+    <a href="index.html#contact">Contact</a>
+  </nav>
+  <a href="index.html#contact" class="pill pill-primary">Start a project</a>
+</header>
+
+<main id="project" class="wrap"></main>
+
+<dialog class="lightbox" id="lightbox" aria-label="Image viewer">
+  <div class="lb-in">
+    <button class="lb-btn lb-close" type="button" id="lb-close">Close</button>
+    <button class="lb-btn lb-prev" type="button" id="lb-prev" aria-label="Previous image">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <img id="lb-img" src="" alt="">
+    <p class="lb-cap" id="lb-cap"></p>
+    <button class="lb-btn lb-next" type="button" id="lb-next" aria-label="Next image">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</dialog>
+
+<footer>
+  <div class="wrap foot">
+    <span class="logo">AEDITS</span>
+    <span class="muted">© <span data-year>2026</span> AEDITS. All work shown with client permission.</span>
+    <a href="index.html#work">All work</a>
+  </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="data/projects.js"></script>
+<script src="js/main.js"></script>
+<script src="js/project.js"></script>
+</body>
+</html>

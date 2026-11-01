@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin · AEDITS</title>
+<meta name="theme-color" content="#420080">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23420080'/%3E%3Ctext x='32' y='45' font-family='Arial' font-weight='900' font-size='38' text-anchor='middle' fill='%23ada701'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Open+Sans:wght@600..800&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin">
+
+<div class="colorbar" aria-hidden="true"><div></div><div></div><div></div><div></div></div>
+
+<header class="ad-top">
+  <div class="ad-brand">
+    <span class="logo">AEDITS</span>
+    <span class="ad-tag">Admin</span>
+  </div>
+  <div class="ad-actions">
+    <span class="ad-status" id="status" role="status" aria-live="polite"></span>
+    <a class="ad-link" href="index.html" target="_blank" rel="noopener">View site</a>
+    <button class="pill pill-outline ad-sm" type="button" id="btn-download">Download update</button>
+    <button class="pill pill-primary ad-sm" type="button" id="btn-publish">Publish to site</button>
+  </div>
+</header>
+
+<details class="ad-settings" id="settings">
+  <summary>Publishing settings</summary>
+  <div class="ad-settings-in">
+    <p class="ad-help">“Publish to site” saves your projects and images straight to the GitHub repository your site is hosted from. These settings are stored only in this browser. See README.md for how to create the access token.</p>
+    <div class="ad-fields">
+      <div class="field"><label for="gh-owner">GitHub username</label><input id="gh-owner" type="text" autocomplete="off" spellcheck="false"></div>
+      <div class="field"><label for="gh-repo">Repository name</label><input id="gh-repo" type="text" autocomplete="off" spellcheck="false"></div>
+      <div class="field"><label for="gh-branch">Branch</label><input id="gh-branch" type="text" autocomplete="off" spellcheck="false" placeholder="main"></div>
+      <div class="field ad-wide"><label for="gh-token">Access token</label><input id="gh-token" type="password" autocomplete="off" spellcheck="false"></div>
+    </div>
+    <div class="ad-row">
+      <button class="pill pill-primary ad-sm" type="button" id="btn-save-settings">Save settings</button>
+      <button class="pill pill-outline ad-sm" type="button" id="btn-test">Test connection</button>
+      <button class="pill pill-outline ad-sm" type="button" id="btn-load-gh">Load latest from GitHub</button>
+      <button class="ad-textbtn" type="button" id="btn-clear-settings">Remove settings from this browser</button>
+    </div>
+    <p class="ad-msg" id="settings-msg" role="status" aria-live="polite"></p>
+  </div>
+</details>
+
+<div class="ad-main">
+  <aside class="ad-list" aria-label="Projects">
+    <div class="ad-list-head">
+      <h2>Projects</h2>
+      <button class="pill pill-primary ad-sm" type="button" id="btn-new">New project</button>
+    </div>
+    <p class="ad-help">Projects show on the site in this order.</p>
+    <ol id="list" class="ad-items"></ol>
+  </aside>
+
+  <section class="ad-editor" id="editor" aria-label="Edit project"></section>
+</div>
+
+<p class="ad-log" id="log" aria-live="polite"></p>
+
+<script src="js/config.js"></script>
+<script src="data/projects.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

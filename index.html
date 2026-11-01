@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AEDITS · Graphic design</title>
+<meta name="description" content="AEDITS is a graphic design studio in Nigeria for brands, campaigns, screens and print.">
+<meta property="og:title" content="AEDITS · Graphic design">
+<meta property="og:description" content="Graphic design for brands, campaigns, screens and print.">
+<meta name="theme-color" content="#420080">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23420080'/%3E%3Ctext x='32' y='45' font-family='Arial' font-weight='900' font-size='38' text-anchor='middle' fill='%23ada701'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Open+Sans:wght@600..800&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="colorbar" aria-hidden="true"><div></div><div></div><div></div><div></div></div>
+
+<header class="wrap header">
+  <a href="#top" class="logo">AEDITS</a>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  <nav id="site-nav" class="nav" aria-label="Main">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <a href="#contact" class="pill pill-primary">Start a project</a>
+</header>
+
+<main>
+  <section id="top" class="wrap hero">
+    <div class="frame">
+      <span class="crop tl" aria-hidden="true"></span>
+      <span class="crop tr" aria-hidden="true"></span>
+      <span class="crop bl" aria-hidden="true"></span>
+      <span class="crop br" aria-hidden="true"></span>
+      <h1 class="wordmark">AEDITS</h1>
+      <svg class="target" aria-hidden="true" width="56" height="56" viewBox="0 0 56 56">
+        <circle cx="28" cy="28" r="16" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="28" cy="28" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+        <line x1="28" y1="2" x2="28" y2="54" stroke="currentColor" stroke-width="2"/>
+        <line x1="2" y1="28" x2="54" y2="28" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="hero-foot">
+      <p class="tagline">Graphic design for brands, campaigns, screens and print.</p>
+      <div class="meta">
+        <span><span class="dot" aria-hidden="true"></span>Taking on new projects</span>
+        <span>Based in Nigeria</span>
+        <a href="#work" style="font-weight:600">See selected work</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="work" class="work section">
+    <div class="wrap">
+      <div class="work-head">
+        <h2 class="h2">Selected work</h2>
+        <div class="filters" id="filters" role="group" aria-label="Filter projects"></div>
+      </div>
+      <!-- Projects come from data/projects.js — add and edit them in admin.html -->
+      <div class="grid" id="grid" aria-live="polite"></div>
+      <p class="empty" id="empty" hidden></p>
+    </div>
+  </section>
+
+  <section id="services" class="wrap section">
+    <h2 class="h2">What AEDITS designs</h2>
+    <div class="services">
+      <div class="service">
+        <h3>Brand identity</h3>
+        <p>Logos, colour and type systems, and the guidelines that keep a brand looking like itself everywhere it shows up.</p>
+      </div>
+      <div class="service">
+        <h3>Social and digital</h3>
+        <p>Post templates, campaign graphics, banners and thumbnails, made to stop the scroll and stay on brand.</p>
+      </div>
+      <div class="service">
+        <h3>Print and packaging</h3>
+        <p>Flyers, posters, event materials, labels and boxes, prepared print-ready so they come back from the press as intended.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about on-purple section">
+    <div class="wrap about-in">
+      <!-- To add your photo: put it in images/ and replace the text below with
+           <img src="images/portrait.jpg" alt="Portrait of [Designer name]"> -->
+      <div class="portrait">Portrait photo</div>
+      <div class="about-copy">
+        <h2 class="h2">Hi, I’m [Designer name]</h2>
+        <p>[A few sentences about you: how you got into design, the kind of clients you work with, and what you care about in a finished piece.]</p>
+        <p>[Tools you work in and any notable clients or collaborations.]</p>
+        <div class="btns">
+          <a href="#contact" class="pill pill-accent">Work with me</a>
+          <a href="#work" class="pill pill-ghost">View projects</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="wrap section contact">
+    <div class="contact-intro">
+      <h2 class="big">Got a project in mind?</h2>
+      <p>Tell me what you’re making and when you need it. I’ll reply with next steps and a quote.</p>
+      <div class="contact-links">
+        <a class="email" data-config-email href="#contact">Email</a>
+        <a data-config-link="instagram" href="#" target="_blank" rel="noopener">Instagram</a>
+        <a data-config-link="behance" href="#" target="_blank" rel="noopener">Behance</a>
+        <a data-config-link="whatsapp" href="#" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+
+    <div class="contact-side">
+      <div class="sent" id="sent" role="status" tabindex="-1" hidden>
+        <strong id="sent-title">Enquiry sent</strong>
+        <span id="sent-msg"></span>
+      </div>
+      <form id="enquiry" class="enquiry" novalidate>
+        <div class="field">
+          <label for="c-name">Your name</label>
+          <input id="c-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="c-email">Email</label>
+          <input id="c-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="c-service">What do you need?</label>
+          <select id="c-service" name="service">
+            <option>Brand identity</option>
+            <option>Social and digital</option>
+            <option>Print and packaging</option>
+            <option>Something else</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="c-msg">Project details</label>
+          <textarea id="c-msg" name="message" rows="5"></textarea>
+        </div>
+        <div class="honey" aria-hidden="true">
+          <label for="c-bot">Leave this empty</label>
+          <input id="c-bot" type="checkbox" name="botcheck" tabindex="-1">
+        </div>
+        <p class="error" id="form-error" role="alert" hidden></p>
+        <button type="submit" class="pill pill-primary">Send enquiry</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span class="logo">AEDITS</span>
+    <span class="muted">© <span data-year>2026</span> AEDITS. All work shown with client permission.</span>
+    <a href="#top">Back to top</a>
+  </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="data/projects.js"></script>
+<script src="js/main.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>
