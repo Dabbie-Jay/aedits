@@ -142,4 +142,26 @@
         submitBtn.textContent = 'Send enquiry';
       });
   });
+
+  // ── About: heading highlight and approach steps ────────────
+  var aboutTitle = document.querySelector('.about-title');
+  if (aboutTitle) {
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { aboutTitle.classList.add('lit'); io.disconnect(); }
+      }, { threshold: 0.6 });
+      io.observe(aboutTitle);
+    } else {
+      aboutTitle.classList.add('lit');
+    }
+  }
+
+  document.querySelectorAll('.step button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var step = btn.closest('.step');
+      var open = !step.classList.contains('open');
+      step.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  });
 })();

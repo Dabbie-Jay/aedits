@@ -144,6 +144,33 @@ a.tile:hover img{transform:scale(1.03)}
 .tool strong + span{display:block;font-size:15px;line-height:1.35;color:#D9C7EE;margin-top:2px}
 .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
 .btns .pill{white-space:nowrap}
+.about .pill{transition:transform .2s ease,background .2s ease,color .2s ease}
+.about .pill:hover{transform:translateY(-2px)}
+.about .pill .arr{display:inline-block;width:0;opacity:0;overflow:hidden;transform:translateX(-6px);transition:width .25s ease,opacity .25s ease,transform .25s ease}
+.about .pill:hover .arr,.about .pill:focus-visible .arr{width:1.1em;opacity:1;transform:none}
+.about .pill:has(.arr){gap:0}
+
+/* about: heading highlight (drawn in when the section scrolls into view) */
+.hl{background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-size:0% .12em;background-position:0 96%;padding-bottom:.04em;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background-size .9s cubic-bezier(.65,0,.35,1) .2s}
+.hl-word{transition:color .5s ease 1s}
+.about-title.lit .hl{background-size:100% .12em}
+.about-title.lit .hl-word{color:var(--accent)}
+@media (prefers-reduced-motion: reduce){.hl{background-size:100% .12em}.hl-word{color:var(--accent)}}
+
+/* about: approach steps */
+.steps{display:flex;flex-direction:column;gap:10px;max-width:62ch}
+.step{background:var(--primary-deep);border-radius:8px}
+.step h3{margin:0}
+.step button{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:16px;padding:16px 20px;cursor:pointer;font-weight:800;font-size:19px;color:#FFFFFF;border-radius:8px}
+.step button:focus-visible{outline:3px solid #FFFFFF;outline-offset:2px}
+.step-num{color:var(--accent);font-stretch:115%;font-size:15px;min-width:22px}
+.step-pm{margin-left:auto;font-size:24px;font-weight:400;line-height:1;transition:transform .3s ease}
+.step.open .step-pm{transform:rotate(45deg)}
+.step-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
+.step.open .step-body{grid-template-rows:1fr}
+.step-body > div{overflow:hidden}
+.about-copy .step-body p{padding:0 20px 18px 58px;font-size:17px}
+@media (max-width:480px){.about-copy .step-body p{padding-left:20px}}
 
 /* contact */
 .contact{display:flex;flex-wrap:wrap;gap:clamp(40px,6vw,96px)}
