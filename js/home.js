@@ -156,12 +156,24 @@
     }
   }
 
-  document.querySelectorAll('.step button').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var step = btn.closest('.step');
-      var open = !step.classList.contains('open');
-      step.classList.toggle('open', open);
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
+  // Steps open on hover where there's a mouse, and on tap on touch screens
+  var canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  function setStep(step, open) {
+    step.classList.toggle('open', open);
+    step.querySelector('button').setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  document.querySelectorAll('.step').forEach(function (step) {
+    var btn = step.querySelector('button');
+    if (canHover) {
+      setStep(step, false);
+      step.addEventListener('mouseenter', function () { setStep(step, true); });
+      step.addEventListener('mouseleave', function () { if (document.activeElement !== btn) setStep(step, false); });
+      btn.addEventListener('focus', function () { setStep(step, true); });
+      btn.addEventListener('blur', function () { if (!step.matches(':hover')) setStep(step, false); });
+    } else {
+      btn.addEventListener('click', function () { setStep(step, !step.classList.contains('open')); });
+    }
   });
 })();
