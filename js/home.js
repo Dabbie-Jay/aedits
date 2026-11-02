@@ -105,7 +105,13 @@
       if (box === openBox) closePanel(); else openCat(box);
     });
     window.addEventListener('resize', placePanel);
-    return { relayout: placePanel };
+    return {
+      relayout: placePanel,
+      open: function (id) {
+        var box = catsEl.querySelector('.cat-box[data-cat="' + id + '"]');
+        if (box && box !== openBox) openCat(box);
+      }
+    };
   }
 
   setupCats(document.getElementById('cats'), 'cat-panel');
@@ -116,12 +122,13 @@
   var drawerCats = null;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function openDrawer(opener) {
+  function openDrawer(opener, catId) {
     if (!drawerCats) drawerCats = setupCats(document.getElementById('drawer-cats'), 'drawer-panel');
     drawer.showModal();
     document.documentElement.classList.add('drawer-open');
     drawer.scrollTop = 0;
     drawer._opener = opener;
+    if (catId) setTimeout(function () { drawerCats.open(catId); }, reduceMotion ? 0 : 250);
   }
   function closeDrawer() {
     drawer.classList.add('closing');
@@ -146,6 +153,14 @@
   document.querySelectorAll('[data-view="drawer"]').forEach(function (a) {
     a.addEventListener('click', function (e) {
       if (drawer && drawer.showModal) { e.preventDefault(); openDrawer(a); }
+    });
+  });
+
+  // Service rows open the drawer straight onto that category's projects
+  document.querySelectorAll('[data-open-cat]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (drawer && drawer.showModal) openDrawer(btn, btn.getAttribute('data-open-cat'));
+      else document.getElementById('work').scrollIntoView();
     });
   });
 
@@ -187,7 +202,7 @@
       message: field('message').value.trim()
     };
     if (!data.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-      showError('Add your name and a valid email address so I can reply.');
+      showError('Add your name and a valid email address.');
       field(data.name ? 'email' : 'name').focus();
       return;
     }

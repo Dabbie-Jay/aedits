@@ -49,6 +49,22 @@
     });
   });
 
+  // Links to sections on the same page jump there instantly, and the
+  // section fades in so the jump feels soft rather than abrupt
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="#"]');
+    if (!a || e.defaultPrevented) return;
+    var id = a.getAttribute('href').slice(1);
+    var target = id ? document.getElementById(id) : null;
+    if (!target) return;
+    e.preventDefault();
+    window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY, behavior: 'instant' });
+    history.pushState(null, '', '#' + id);
+    target.classList.remove('arrive');
+    void target.offsetWidth;
+    target.classList.add('arrive');
+  });
+
   // Footer year
   document.querySelectorAll('[data-year]').forEach(function (el) {
     el.textContent = new Date().getFullYear();
