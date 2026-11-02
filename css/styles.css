@@ -135,6 +135,25 @@ a:hover{color:var(--brand-text)}
 .cat-card:hover h3 span{transform:translateX(4px)}
 .cat-card p{margin:0 6px;font-size:15px;color:var(--c-soft)}
 .cat-empty{margin:0;font-size:17px;color:var(--c-soft)}
+
+/* projects drawer: slides up over the page from "View projects" */
+.drawer{position:fixed;inset:auto 0 0 0;margin:0;width:100%;max-width:none;height:min(92vh,92dvh);max-height:none;padding:0;border:0;border-radius:20px 20px 0 0;background:var(--bg-soft);color:var(--text);overflow-y:auto;overscroll-behavior:contain}
+.drawer[open]{animation:drawer-up .55s cubic-bezier(.2,.8,.2,1)}
+.drawer.closing{animation:drawer-down .4s ease forwards}
+.drawer::backdrop{background:rgba(20,0,40,.55);animation:fade-in .4s ease}
+.drawer.closing::backdrop{animation:fade-out .4s ease forwards}
+@keyframes drawer-up{from{transform:translateY(100%)}to{transform:none}}
+@keyframes drawer-down{from{transform:none}to{transform:translateY(100%)}}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes fade-out{from{opacity:1}to{opacity:0}}
+@media (prefers-reduced-motion: reduce){.drawer[open],.drawer.closing,.drawer::backdrop{animation:none}}
+.drawer-open{overflow:hidden}
+.drawer-in{max-width:1360px;margin:0 auto;padding:clamp(24px,4vw,48px) clamp(20px,4vw,40px) 48px}
+.drawer-in::before{content:"";display:block;width:48px;height:5px;border-radius:99px;background:var(--text-3);opacity:.35;margin:-8px auto 20px}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.drawer-close{flex:none;width:48px;height:48px;border-radius:50%;border:2px solid var(--brand-text);background:transparent;color:var(--brand-text);font:inherit;font-size:28px;line-height:1;cursor:pointer;transition:background .2s,color .2s,transform .3s}
+.drawer-close:hover{background:var(--primary);border-color:var(--primary);color:#FFFFFF;transform:rotate(90deg)}
+.drawer-note{margin:12px 0 28px;font-size:17px;color:var(--text-3)}
 .card{display:flex;flex-direction:column;gap:14px}
 .tile{display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;border-radius:4px;text-decoration:none;font-size:15px;font-weight:600;overflow:hidden}
 .tile img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}

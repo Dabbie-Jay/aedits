@@ -6,7 +6,6 @@
   // ── Work categories ────────────────────────────────────────
   // Four coloured boxes. Clicking one opens a panel underneath with that
   // category's projects; each project links to its own page.
-  var catsEl = document.getElementById('cats');
   var empty = document.getElementById('empty');
   var projects = A.projects;
   var catDesc = {
@@ -38,71 +37,117 @@
     empty.textContent = 'New projects are on the way. Check back soon.';
   }
 
-  catsEl.innerHTML = cats.map(function (c) {
-    var n = inCat(c.id).length;
-    return '<button class="cat-box ' + A.tileClass(c.id) + '" type="button" data-cat="' + esc(c.id) + '" aria-expanded="false" aria-controls="cat-panel">' +
-      '<span class="cat-top"><span class="cat-count">' + (n ? n + (n === 1 ? ' project' : ' projects') : 'Coming soon') + '</span>' +
-      '<span class="cat-plus" aria-hidden="true">+</span></span>' +
-      '<span><span class="cat-name">' + esc(c.label) + '</span><span class="cat-desc">' + esc(catDesc[c.id] || '') + '</span></span>' +
-      '</button>';
-  }).join('');
+  // Builds the boxes and their opening panel inside catsEl. Used for the
+  // Selected work section and again inside the projects drawer.
+  function setupCats(catsEl, panelId) {
+    catsEl.innerHTML = cats.map(function (c) {
+      var n = inCat(c.id).length;
+      return '<button class="cat-box ' + A.tileClass(c.id) + '" type="button" data-cat="' + esc(c.id) + '" aria-expanded="false" aria-controls="' + panelId + '">' +
+        '<span class="cat-top"><span class="cat-count">' + (n ? n + (n === 1 ? ' project' : ' projects') : 'Coming soon') + '</span>' +
+        '<span class="cat-plus" aria-hidden="true">+</span></span>' +
+        '<span><span class="cat-name">' + esc(c.label) + '</span><span class="cat-desc">' + esc(catDesc[c.id] || '') + '</span></span>' +
+        '</button>';
+    }).join('');
 
-  var panel = document.createElement('div');
-  panel.className = 'cat-panel';
-  panel.id = 'cat-panel';
-  panel.setAttribute('role', 'region');
-  panel.hidden = true;
-  panel.innerHTML = '<div><div class="cat-panel-in"></div></div>';
-  var panelIn = panel.querySelector('.cat-panel-in');
-  var openBox = null;
+    var panel = document.createElement('div');
+    panel.className = 'cat-panel';
+    panel.id = panelId;
+    panel.setAttribute('role', 'region');
+    panel.hidden = true;
+    panel.innerHTML = '<div><div class="cat-panel-in"></div></div>';
+    var panelIn = panel.querySelector('.cat-panel-in');
+    var openBox = null;
 
-  // Put the panel straight after the last box on the open box's row, so it
-  // opens directly underneath it at every screen width.
-  function placePanel() {
-    if (!openBox) return;
-    var boxes = [].slice.call(catsEl.querySelectorAll('.cat-box'));
-    var row = boxes.filter(function (b) { return b.offsetTop === openBox.offsetTop; });
-    row[row.length - 1].after(panel);
-    panel.classList.toggle('first', row[0] === openBox);
-    panel.classList.toggle('last', row[row.length - 1] === openBox);
+    // Put the panel straight after the last box on the open box's row, so it
+    // opens directly underneath it at every screen width.
+    function placePanel() {
+      if (!openBox) return;
+      var boxes = [].slice.call(catsEl.querySelectorAll('.cat-box'));
+      var row = boxes.filter(function (b) { return b.offsetTop === openBox.offsetTop; });
+      row[row.length - 1].after(panel);
+      panel.classList.toggle('first', row[0] === openBox);
+      panel.classList.toggle('last', row[row.length - 1] === openBox);
+    }
+
+    function closePanel() {
+      if (!openBox) return;
+      openBox.classList.remove('open');
+      openBox.setAttribute('aria-expanded', 'false');
+      openBox = null;
+      catsEl.classList.remove('has-open');
+      panel.classList.remove('open');
+      setTimeout(function () { if (!openBox) panel.hidden = true; }, 600);
+    }
+
+    function openCat(box) {
+      if (openBox) { openBox.classList.remove('open'); openBox.setAttribute('aria-expanded', 'false'); }
+      var id = box.getAttribute('data-cat');
+      var list = inCat(id);
+      openBox = box;
+      box.classList.add('open');
+      box.setAttribute('aria-expanded', 'true');
+      catsEl.classList.add('has-open');
+      panel.className = 'cat-panel ' + A.tileClass(id);
+      panel.setAttribute('aria-label', A.categoryLabel(id) + ' projects');
+      panelIn.innerHTML = list.length
+        ? '<div class="cat-grid">' + list.map(cardHTML).join('') + '</div>'
+        : '<p class="cat-empty">' + esc(A.categoryLabel(id)) + ' projects are on the way. Check back soon.</p>';
+      panelIn.querySelectorAll('.cat-card').forEach(function (c, i) { c.style.transitionDelay = (0.2 + i * 0.08) + 's'; });
+      panel.hidden = false;
+      placePanel();
+      void panel.offsetWidth;
+      panel.classList.add('open');
+    }
+
+    catsEl.addEventListener('click', function (e) {
+      var box = e.target.closest('.cat-box');
+      if (!box) return;
+      if (box === openBox) closePanel(); else openCat(box);
+    });
+    window.addEventListener('resize', placePanel);
+    return { relayout: placePanel };
   }
 
-  function closePanel() {
-    if (!openBox) return;
-    openBox.classList.remove('open');
-    openBox.setAttribute('aria-expanded', 'false');
-    openBox = null;
-    catsEl.classList.remove('has-open');
-    panel.classList.remove('open');
-    setTimeout(function () { if (!openBox) panel.hidden = true; }, 600);
+  setupCats(document.getElementById('cats'), 'cat-panel');
+
+  // ── "View projects" button ─────────────────────────────────
+  // Slides the projects up over the page instead of scrolling away to them.
+  var drawer = document.getElementById('work-drawer');
+  var drawerCats = null;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function openDrawer(opener) {
+    if (!drawerCats) drawerCats = setupCats(document.getElementById('drawer-cats'), 'drawer-panel');
+    drawer.showModal();
+    document.documentElement.classList.add('drawer-open');
+    drawer.scrollTop = 0;
+    drawer._opener = opener;
+  }
+  function closeDrawer() {
+    drawer.classList.add('closing');
+    setTimeout(function () {
+      drawer.classList.remove('closing');
+      drawer.close();
+      afterClose();
+    }, reduceMotion ? 0 : 400);
+  }
+  function afterClose() {
+    document.documentElement.classList.remove('drawer-open');
+    if (drawer._opener) { drawer._opener.focus({ preventScroll: true }); drawer._opener = null; }
+  }
+  if (drawer) {
+    drawer.addEventListener('close', afterClose);
+    drawer.addEventListener('cancel', function (e) { e.preventDefault(); closeDrawer(); });
+    drawer.addEventListener('click', function (e) {
+      if (e.target === drawer || e.target.closest('[data-close-drawer]')) closeDrawer();
+    });
   }
 
-  function openCat(box) {
-    if (openBox) { openBox.classList.remove('open'); openBox.setAttribute('aria-expanded', 'false'); }
-    var id = box.getAttribute('data-cat');
-    var list = inCat(id);
-    openBox = box;
-    box.classList.add('open');
-    box.setAttribute('aria-expanded', 'true');
-    catsEl.classList.add('has-open');
-    panel.className = 'cat-panel ' + A.tileClass(id);
-    panel.setAttribute('aria-label', A.categoryLabel(id) + ' projects');
-    panelIn.innerHTML = list.length
-      ? '<div class="cat-grid">' + list.map(cardHTML).join('') + '</div>'
-      : '<p class="cat-empty">' + esc(A.categoryLabel(id)) + ' projects are on the way. Check back soon.</p>';
-    panelIn.querySelectorAll('.cat-card').forEach(function (c, i) { c.style.transitionDelay = (0.2 + i * 0.08) + 's'; });
-    panel.hidden = false;
-    placePanel();
-    void panel.offsetWidth;
-    panel.classList.add('open');
-  }
-
-  catsEl.addEventListener('click', function (e) {
-    var box = e.target.closest('.cat-box');
-    if (!box) return;
-    if (box === openBox) closePanel(); else openCat(box);
+  document.querySelectorAll('[data-view="drawer"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      if (drawer && drawer.showModal) { e.preventDefault(); openDrawer(a); }
+    });
   });
-  window.addEventListener('resize', placePanel);
 
   // ── Enquiry form ───────────────────────────────────────────
   var form = document.getElementById('enquiry');

@@ -125,7 +125,7 @@
         </div>
         <div class="btns">
           <a href="#contact" class="pill pill-accent">Work with me <span class="arr" aria-hidden="true">→</span></a>
-          <a href="#work" class="pill pill-ghost">View projects <span class="arr" aria-hidden="true">→</span></a>
+          <a href="#work" class="pill pill-ghost" data-view="drawer">View projects <span class="arr" aria-hidden="true">→</span></a>
         </div>
       </div>
     </div>
@@ -180,6 +180,18 @@
     </div>
   </section>
 </main>
+
+<!-- Opened by "View projects" in the About section: shows the work without scrolling away -->
+<dialog class="drawer" id="work-drawer" aria-labelledby="drawer-title">
+  <div class="drawer-in">
+    <div class="drawer-head">
+      <h2 class="h2" id="drawer-title">Selected work</h2>
+      <button type="button" class="drawer-close" data-close-drawer aria-label="Close">×</button>
+    </div>
+    <p class="drawer-note">Pick a category to see the projects in it.</p>
+    <div class="cats" id="drawer-cats"></div>
+  </div>
+</dialog>
 
 <footer>
   <div class="wrap foot">
