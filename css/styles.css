@@ -166,9 +166,14 @@ a.tile:hover img{transform:scale(1.03)}
 .step-num{color:var(--accent);font-stretch:115%;font-size:15px;min-width:22px}
 .step-pm{margin-left:auto;font-size:24px;font-weight:400;line-height:1;transition:transform .3s ease}
 .step.open .step-pm{transform:rotate(45deg)}
-.step-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
+.step{transition:background .4s ease}
+.step.open{background:#3A0870}
+.step-pm{transition:transform .5s ease}
+.step-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s cubic-bezier(.4,0,.2,1)}
 .step.open .step-body{grid-template-rows:1fr}
 .step-body > div{overflow:hidden}
+.step-body p{opacity:0;transform:translateY(8px);transition:opacity .25s ease,transform .25s ease}
+.step.open .step-body p{opacity:1;transform:none;transition:opacity .6s ease .25s,transform .6s ease .25s}
 .about-copy .step-body p{padding:0 20px 18px 58px;font-size:17px}
 @media (max-width:480px){.about-copy .step-body p{padding-left:20px}}
 

@@ -168,8 +168,10 @@
     var btn = step.querySelector('button');
     if (canHover) {
       setStep(step, false);
-      step.addEventListener('mouseenter', function () { setStep(step, true); });
-      step.addEventListener('mouseleave', function () { if (document.activeElement !== btn) setStep(step, false); });
+      // A short pause before opening, so a pointer just passing over doesn't open it
+      var timer;
+      step.addEventListener('mouseenter', function () { timer = setTimeout(function () { setStep(step, true); }, 150); });
+      step.addEventListener('mouseleave', function () { clearTimeout(timer); if (document.activeElement !== btn) setStep(step, false); });
       btn.addEventListener('focus', function () { setStep(step, true); });
       btn.addEventListener('blur', function () { if (!step.matches(':hover')) setStep(step, false); });
     } else {
