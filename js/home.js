@@ -1,65 +1,108 @@
-// AEDITS — homepage: work grid, filters and enquiry form
+// AEDITS — homepage: work categories and enquiry form
 (function () {
   var A = window.AEDITS;
   var esc = A.esc;
 
-  // ── Work grid ──────────────────────────────────────────────
-  var grid = document.getElementById('grid');
-  var filtersEl = document.getElementById('filters');
+  // ── Work categories ────────────────────────────────────────
+  // Four coloured boxes. Clicking one opens a panel underneath with that
+  // category's projects; each project links to its own page.
+  var catsEl = document.getElementById('cats');
   var empty = document.getElementById('empty');
   var projects = A.projects;
-  var current = 'all';
+  var catDesc = {
+    branding: 'Logos and brand identities',
+    social: 'Campaigns and social media',
+    print: 'Posters, flyers and print',
+    packaging: 'Labels and product packaging'
+  };
+  var cats = (A.config.categories || []).slice();
+  projects.forEach(function (p) {
+    if (p.category && !cats.some(function (c) { return c.id === p.category; })) cats.push({ id: p.category, label: A.categoryLabel(p.category) });
+  });
+
+  function inCat(id) { return projects.filter(function (p) { return p.category === id; }); }
 
   function cardHTML(p) {
-    var href = 'project.html?id=' + encodeURIComponent(p.id);
     var tileInner = p.cover
       ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy">'
       : '<span>Project image</span>';
-    return '<article class="card">' +
-      '<a class="tile ' + A.tileClass(p.category) + '" href="' + href + '" tabindex="-1" aria-hidden="true">' + tileInner + '</a>' +
-      '<div class="card-row"><h3><a href="' + href + '">' + esc(p.title) + '</a></h3>' +
-      '<span class="cat">' + esc(A.categoryLabel(p.category)) + '</span></div>' +
+    return '<a class="cat-card" href="project.html?id=' + encodeURIComponent(p.id) + '">' +
+      '<span class="tile">' + tileInner + '</span>' +
+      '<h3>' + esc(p.title) + '<span aria-hidden="true">→</span></h3>' +
       '<p>' + esc([p.client, p.summary].filter(Boolean).join(', ')) + '</p>' +
-      '</article>';
+      '</a>';
   }
 
-  function renderGrid() {
-    var shown = projects.filter(function (p) { return current === 'all' || p.category === current; });
-    grid.innerHTML = shown.map(cardHTML).join('');
-    empty.hidden = shown.length > 0;
-    empty.textContent = projects.length === 0
-      ? 'New projects are on the way. Check back soon.'
-      : 'No projects in this category yet. Pick another filter to see more work.';
+  if (!projects.length) {
+    empty.hidden = false;
+    empty.textContent = 'New projects are on the way. Check back soon.';
   }
 
-  function renderFilters() {
-    var used = [];
-    projects.forEach(function (p) { if (p.category && used.indexOf(p.category) === -1) used.push(p.category); });
-    // Keep the order from config, then any extras
-    var order = (A.config.categories || []).map(function (c) { return c.id; });
-    used.sort(function (a, b) {
-      var ia = order.indexOf(a), ib = order.indexOf(b);
-      return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
-    });
-    if (used.length < 2) { filtersEl.hidden = true; return; }
-    var items = [{ id: 'all', label: 'All' }].concat(used.map(function (id) { return { id: id, label: A.categoryLabel(id) }; }));
-    filtersEl.innerHTML = items.map(function (it) {
-      return '<button class="filter" type="button" data-filter="' + esc(it.id) + '" aria-pressed="' + (it.id === current) + '">' + esc(it.label) + '</button>';
-    }).join('');
+  catsEl.innerHTML = cats.map(function (c) {
+    var n = inCat(c.id).length;
+    return '<button class="cat-box ' + A.tileClass(c.id) + '" type="button" data-cat="' + esc(c.id) + '" aria-expanded="false" aria-controls="cat-panel">' +
+      '<span class="cat-top"><span class="cat-count">' + (n ? n + (n === 1 ? ' project' : ' projects') : 'Coming soon') + '</span>' +
+      '<span class="cat-plus" aria-hidden="true">+</span></span>' +
+      '<span><span class="cat-name">' + esc(c.label) + '</span><span class="cat-desc">' + esc(catDesc[c.id] || '') + '</span></span>' +
+      '</button>';
+  }).join('');
+
+  var panel = document.createElement('div');
+  panel.className = 'cat-panel';
+  panel.id = 'cat-panel';
+  panel.setAttribute('role', 'region');
+  panel.hidden = true;
+  panel.innerHTML = '<div><div class="cat-panel-in"></div></div>';
+  var panelIn = panel.querySelector('.cat-panel-in');
+  var openBox = null;
+
+  // Put the panel straight after the last box on the open box's row, so it
+  // opens directly underneath it at every screen width.
+  function placePanel() {
+    if (!openBox) return;
+    var boxes = [].slice.call(catsEl.querySelectorAll('.cat-box'));
+    var row = boxes.filter(function (b) { return b.offsetTop === openBox.offsetTop; });
+    row[row.length - 1].after(panel);
+    panel.classList.toggle('first', row[0] === openBox);
+    panel.classList.toggle('last', row[row.length - 1] === openBox);
   }
 
-  filtersEl.addEventListener('click', function (e) {
-    var btn = e.target.closest('.filter');
-    if (!btn) return;
-    current = btn.getAttribute('data-filter');
-    filtersEl.querySelectorAll('.filter').forEach(function (b) {
-      b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
-    });
-    renderGrid();
+  function closePanel() {
+    if (!openBox) return;
+    openBox.classList.remove('open');
+    openBox.setAttribute('aria-expanded', 'false');
+    openBox = null;
+    catsEl.classList.remove('has-open');
+    panel.classList.remove('open');
+    setTimeout(function () { if (!openBox) panel.hidden = true; }, 600);
+  }
+
+  function openCat(box) {
+    if (openBox) { openBox.classList.remove('open'); openBox.setAttribute('aria-expanded', 'false'); }
+    var id = box.getAttribute('data-cat');
+    var list = inCat(id);
+    openBox = box;
+    box.classList.add('open');
+    box.setAttribute('aria-expanded', 'true');
+    catsEl.classList.add('has-open');
+    panel.className = 'cat-panel ' + A.tileClass(id);
+    panel.setAttribute('aria-label', A.categoryLabel(id) + ' projects');
+    panelIn.innerHTML = list.length
+      ? '<div class="cat-grid">' + list.map(cardHTML).join('') + '</div>'
+      : '<p class="cat-empty">' + esc(A.categoryLabel(id)) + ' projects are on the way. Check back soon.</p>';
+    panelIn.querySelectorAll('.cat-card').forEach(function (c, i) { c.style.transitionDelay = (0.2 + i * 0.08) + 's'; });
+    panel.hidden = false;
+    placePanel();
+    void panel.offsetWidth;
+    panel.classList.add('open');
+  }
+
+  catsEl.addEventListener('click', function (e) {
+    var box = e.target.closest('.cat-box');
+    if (!box) return;
+    if (box === openBox) closePanel(); else openCat(box);
   });
-
-  renderFilters();
-  renderGrid();
+  window.addEventListener('resize', placePanel);
 
   // ── Enquiry form ───────────────────────────────────────────
   var form = document.getElementById('enquiry');
