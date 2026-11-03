@@ -65,7 +65,7 @@
   <section id="work" class="work section">
     <div class="wrap">
       <div class="work-head">
-        <h2 class="h2">Selected work</h2>
+        <div><p class="eyebrow">Portfolio</p><h2 class="h2" style="margin-top:10px">Selected work</h2></div>
         <p>Pick a category to see the projects in it.</p>
       </div>
       <!-- Projects come from data/projects.js — add and edit them in admin.html -->
@@ -81,34 +81,51 @@
       <p>Every project starts with understanding the idea, the people, and what the design needs to say. Pick a service to see the work.</p>
     </div>
     <ul class="service-list">
-      <li><button type="button" class="service-row" data-open-cat="branding">
+      <li><a href="#work" class="service-row" data-open-cat="branding">
         <span class="num">01</span>
         <span><span class="service-name">Brand identity</span><span class="service-desc">Logos, colour and type systems, and the guidelines that keep a brand looking like itself.</span></span>
         <span class="service-arr" aria-hidden="true">↗</span>
-      </button></li>
-      <li><button type="button" class="service-row" data-open-cat="social">
+      </a></li>
+      <li><a href="#work" class="service-row" data-open-cat="social">
         <span class="num">02</span>
         <span><span class="service-name">Social and campaigns</span><span class="service-desc">Post templates, campaign graphics, banners and thumbnails, made to stop the scroll.</span></span>
         <span class="service-arr" aria-hidden="true">↗</span>
-      </button></li>
-      <li><button type="button" class="service-row" data-open-cat="print">
+      </a></li>
+      <li><a href="#work" class="service-row" data-open-cat="print">
         <span class="num">03</span>
         <span><span class="service-name">Print</span><span class="service-desc">Flyers, posters and event materials, prepared print-ready so they come back as intended.</span></span>
         <span class="service-arr" aria-hidden="true">↗</span>
-      </button></li>
-      <li><button type="button" class="service-row" data-open-cat="packaging">
+      </a></li>
+      <li><a href="#work" class="service-row" data-open-cat="packaging">
         <span class="num">04</span>
         <span><span class="service-name">Packaging</span><span class="service-desc">Labels, pouches and boxes with character, clear information and attention to detail.</span></span>
         <span class="service-arr" aria-hidden="true">↗</span>
-      </button></li>
+      </a></li>
     </ul>
   </section>
 
   <section id="about" class="about on-purple">
     <div class="wrap about-in">
-      <!-- To add your photo: put it in images/ and replace the text below with
-           <img src="images/portrait.jpg" alt="Portrait of the AEDITS designer"> -->
-      <div class="portrait">Portrait or studio photo</div>
+      <div class="about-side">
+        <!-- To add your photo: put it in images/ and replace the text below with
+             <img src="images/portrait.jpg" alt="Portrait of the AEDITS designer"> -->
+        <div class="portrait">Portrait or studio photo</div>
+        <div class="tools">
+          <h3>Tools I use</h3>
+          <ul class="tool-list">
+            <!-- To add an app icon: put it in images/ and replace the letters with
+                 <img src="images/photoshop.png" alt=""> -->
+            <li class="tool">
+              <span class="tool-icon tool-ps">Ps</span>
+              <span><strong>Adobe Photoshop</strong><span>Photo editing and compositing</span></span>
+            </li>
+            <li class="tool">
+              <span class="tool-icon tool-ai">Ai</span>
+              <span><strong>Adobe Illustrator</strong><span>Logos and vector artwork</span></span>
+            </li>
+          </ul>
+        </div>
+      </div>
       <div class="about-copy">
         <h2 class="h2 about-title">We believe <span class="hl">every idea</span> deserves to be <span class="hl-word">seen.</span></h2>
         <p>AEDITS is an independent design practice built around one belief: good design goes beyond aesthetics. It communicates, connects, and gives ideas meaning.</p>
@@ -127,24 +144,9 @@
           </div>
         </div>
         <p>From brand identity to campaigns and visual communication, our goal remains the same: to make your ideas visible.</p>
-        <div class="tools">
-          <h3>Tools I use</h3>
-          <ul class="tool-list">
-            <!-- To add an app icon: put it in images/ and replace the letters with
-                 <img src="images/photoshop.png" alt=""> -->
-            <li class="tool">
-              <span class="tool-icon tool-ps">Ps</span>
-              <span><strong>Adobe Photoshop</strong><span>Photo editing and compositing</span></span>
-            </li>
-            <li class="tool">
-              <span class="tool-icon tool-ai">Ai</span>
-              <span><strong>Adobe Illustrator</strong><span>Logos and vector artwork</span></span>
-            </li>
-          </ul>
-        </div>
         <div class="btns">
           <a href="#contact" class="pill pill-accent">Work with me <span class="arr" aria-hidden="true">→</span></a>
-          <a href="#work" class="pill pill-ghost" data-view="drawer">View projects <span class="arr" aria-hidden="true">→</span></a>
+          <a href="#work" class="pill pill-ghost">View projects <span class="arr" aria-hidden="true">→</span></a>
         </div>
       </div>
     </div>
@@ -199,18 +201,6 @@
     </div>
   </section>
 </main>
-
-<!-- Opened by "View projects" in the About section: shows the work without scrolling away -->
-<dialog class="drawer" id="work-drawer" aria-labelledby="drawer-title">
-  <div class="drawer-in">
-    <div class="drawer-head">
-      <h2 class="h2" id="drawer-title">Selected work</h2>
-      <button type="button" class="drawer-close" data-close-drawer aria-label="Close">×</button>
-    </div>
-    <p class="drawer-note">Pick a category to see the projects in it.</p>
-    <div class="cats" id="drawer-cats"></div>
-  </div>
-</dialog>
 
 <footer>
   <div class="wrap foot">

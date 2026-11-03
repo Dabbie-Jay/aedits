@@ -37,15 +37,18 @@
     empty.textContent = 'New projects are on the way. Check back soon.';
   }
 
-  // Builds the boxes and their opening panel inside catsEl. Used for the
-  // Selected work section and again inside the projects drawer.
+  // Builds the boxes and their opening panel inside catsEl
   function setupCats(catsEl, panelId) {
     catsEl.innerHTML = cats.map(function (c) {
-      var n = inCat(c.id).length;
+      var list = inCat(c.id);
+      var n = list.length;
+      // Small tilted preview of the category's first project that has a cover
+      var withCover = list.filter(function (p) { return p.cover; })[0];
+      var thumb = withCover ? '<span class="cat-thumb" aria-hidden="true"><img src="' + esc(withCover.cover) + '" alt="" loading="lazy"></span>' : '';
       return '<button class="cat-box ' + A.tileClass(c.id) + '" type="button" data-cat="' + esc(c.id) + '" aria-expanded="false" aria-controls="' + panelId + '">' +
-        '<span class="cat-top"><span class="cat-count">' + (n ? n + (n === 1 ? ' project' : ' projects') : 'Coming soon') + '</span>' +
+        '<span class="cat-top"><span class="cat-count">' + (n ? n + (n === 1 ? ' project' : ' projects') : 'Coming soon') + '</span>' + thumb + '</span>' +
+        '<span class="cat-bottom"><span><span class="cat-name">' + esc(c.label) + '</span><span class="cat-desc">' + esc(catDesc[c.id] || '') + '</span></span>' +
         '<span class="cat-plus" aria-hidden="true">+</span></span>' +
-        '<span><span class="cat-name">' + esc(c.label) + '</span><span class="cat-desc">' + esc(catDesc[c.id] || '') + '</span></span>' +
         '</button>';
     }).join('');
 
@@ -114,54 +117,12 @@
     };
   }
 
-  setupCats(document.getElementById('cats'), 'cat-panel');
+  var workCats = setupCats(document.getElementById('cats'), 'cat-panel');
 
-  // ── "View projects" button ─────────────────────────────────
-  // Slides the projects up over the page instead of scrolling away to them.
-  var drawer = document.getElementById('work-drawer');
-  var drawerCats = null;
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function openDrawer(opener, catId) {
-    if (!drawerCats) drawerCats = setupCats(document.getElementById('drawer-cats'), 'drawer-panel');
-    drawer.showModal();
-    document.documentElement.classList.add('drawer-open');
-    drawer.scrollTop = 0;
-    drawer._opener = opener;
-    if (catId) setTimeout(function () { drawerCats.open(catId); }, reduceMotion ? 0 : 250);
-  }
-  function closeDrawer() {
-    drawer.classList.add('closing');
-    setTimeout(function () {
-      drawer.classList.remove('closing');
-      drawer.close();
-      afterClose();
-    }, reduceMotion ? 0 : 400);
-  }
-  function afterClose() {
-    document.documentElement.classList.remove('drawer-open');
-    if (drawer._opener) { drawer._opener.focus({ preventScroll: true }); drawer._opener = null; }
-  }
-  if (drawer) {
-    drawer.addEventListener('close', afterClose);
-    drawer.addEventListener('cancel', function (e) { e.preventDefault(); closeDrawer(); });
-    drawer.addEventListener('click', function (e) {
-      if (e.target === drawer || e.target.closest('[data-close-drawer]')) closeDrawer();
-    });
-  }
-
-  document.querySelectorAll('[data-view="drawer"]').forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      if (drawer && drawer.showModal) { e.preventDefault(); openDrawer(a); }
-    });
-  });
-
-  // Service rows open the drawer straight onto that category's projects
-  document.querySelectorAll('[data-open-cat]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      if (drawer && drawer.showModal) openDrawer(btn, btn.getAttribute('data-open-cat'));
-      else document.getElementById('work').scrollIntoView();
-    });
+  // Service rows link to Selected work (main.js jumps there) and open the
+  // matching category so its projects are already showing
+  document.querySelectorAll('[data-open-cat]').forEach(function (link) {
+    link.addEventListener('click', function () { workCats.open(link.getAttribute('data-open-cat')); });
   });
 
   // ── Enquiry form ───────────────────────────────────────────
