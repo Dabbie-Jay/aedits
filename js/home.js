@@ -1,129 +1,49 @@
-// AEDITS — homepage: work categories and enquiry form
+// AEDITS — homepage: featured work and enquiry form
 (function () {
   var A = window.AEDITS;
   var esc = A.esc;
 
-  // ── Work categories ────────────────────────────────────────
-  // Four coloured boxes. Clicking one opens a panel underneath with that
-  // category's projects; each project links to its own page.
+  // ── Selected work ──────────────────────────────────────────
+  // One featured project per category (set with "featured" in data/projects.js
+  // or the tick box in admin.html), shown as large cards in a 2×2 grid. Each
+  // card opens the project, and its button opens the page with all that
+  // category's work.
   var empty = document.getElementById('empty');
-  var projects = A.projects;
-  var catDesc = {
-    branding: 'Logos and brand identities',
-    social: 'Campaigns and social media',
-    print: 'Posters, flyers and print',
-    packaging: 'Labels and product packaging'
-  };
-  var cats = (A.config.categories || []).slice();
-  projects.forEach(function (p) {
-    if (p.category && !cats.some(function (c) { return c.id === p.category; })) cats.push({ id: p.category, label: A.categoryLabel(p.category) });
-  });
+  var cats = A.config.categories || [];
 
-  function inCat(id) { return projects.filter(function (p) { return p.category === id; }); }
-
-  function cardHTML(p) {
-    var tileInner = p.cover
+  function featHTML(c, i) {
+    var p = A.featuredIn(c.id);
+    var total = A.inCategory(c.id).length;
+    var cls = A.tileClass(c.id);
+    var label = esc(c.label);
+    var idx = '<span class="feat-idx">' + ('0' + (i + 1)).slice(-2) + ' / ' + ('0' + cats.length).slice(-2) + '</span>';
+    var art = p && p.cover
       ? '<img src="' + esc(p.cover) + '" alt="" loading="lazy">'
-      : '<span>Project image</span>';
-    return '<a class="cat-card" href="project.html?id=' + encodeURIComponent(p.id) + '">' +
-      '<span class="tile">' + tileInner + '</span>' +
-      '<h3>' + esc(p.title) + '<span aria-hidden="true">→</span></h3>' +
-      '<p>' + esc([p.client, p.summary].filter(Boolean).join(', ')) + '</p>' +
-      '</a>';
+      : '<span class="feat-ph">' + label + '<small>Project image</small></span>';
+    var head = '<span class="feat-cat">' + label + '</span>';
+    var all = '<a class="feat-all" href="category.html?c=' + encodeURIComponent(c.id) + '">' +
+      'See all ' + label + ' work <span class="feat-n">' + total + '</span><span class="feat-arr" aria-hidden="true">→</span></a>';
+
+    if (!p) {
+      return '<article class="feat ' + cls + '">' + head +
+        '<div class="feat-art"><span class="feat-piece">' + art + '</span></div>' +
+        '<div class="feat-cap"><div><strong>Coming soon</strong><span class="feat-sub">' + esc(A.catDesc[c.id] || '') + '</span></div>' + idx + '</div>' +
+        '</article>';
+    }
+    return '<article class="feat ' + cls + '">' + head +
+      '<a class="feat-link" href="project.html?id=' + encodeURIComponent(p.id) + '">' +
+        '<span class="feat-art"><span class="feat-piece">' + art + '</span></span>' +
+        '<span class="feat-cap"><span><strong>' + esc(p.title) + '</strong>' +
+        '<span class="feat-sub">' + esc([p.summary, p.client].filter(Boolean).join(' · ')) + '</span></span>' + idx + '</span>' +
+      '</a>' + all +
+      '</article>';
   }
 
-  if (!projects.length) {
+  if (!A.projects.length) {
     empty.hidden = false;
     empty.textContent = 'New projects are on the way. Check back soon.';
   }
-
-  // Builds the boxes and their opening panel inside catsEl
-  function setupCats(catsEl, panelId) {
-    catsEl.innerHTML = cats.map(function (c) {
-      var list = inCat(c.id);
-      var n = list.length;
-      // Small tilted preview of the category's first project that has a cover
-      var withCover = list.filter(function (p) { return p.cover; })[0];
-      var thumb = withCover ? '<span class="cat-thumb" aria-hidden="true"><img src="' + esc(withCover.cover) + '" alt="" loading="lazy"></span>' : '';
-      return '<button class="cat-box ' + A.tileClass(c.id) + '" type="button" data-cat="' + esc(c.id) + '" aria-expanded="false" aria-controls="' + panelId + '">' +
-        '<span class="cat-top"><span class="cat-count">' + (n ? n + (n === 1 ? ' project' : ' projects') : 'Coming soon') + '</span>' + thumb + '</span>' +
-        '<span class="cat-bottom"><span><span class="cat-name">' + esc(c.label) + '</span><span class="cat-desc">' + esc(catDesc[c.id] || '') + '</span></span>' +
-        '<span class="cat-plus" aria-hidden="true">+</span></span>' +
-        '</button>';
-    }).join('');
-
-    var panel = document.createElement('div');
-    panel.className = 'cat-panel';
-    panel.id = panelId;
-    panel.setAttribute('role', 'region');
-    panel.hidden = true;
-    panel.innerHTML = '<div><div class="cat-panel-in"></div></div>';
-    var panelIn = panel.querySelector('.cat-panel-in');
-    var openBox = null;
-
-    // Put the panel straight after the last box on the open box's row, so it
-    // opens directly underneath it at every screen width.
-    function placePanel() {
-      if (!openBox) return;
-      var boxes = [].slice.call(catsEl.querySelectorAll('.cat-box'));
-      var row = boxes.filter(function (b) { return b.offsetTop === openBox.offsetTop; });
-      row[row.length - 1].after(panel);
-      panel.classList.toggle('first', row[0] === openBox);
-      panel.classList.toggle('last', row[row.length - 1] === openBox);
-    }
-
-    function closePanel() {
-      if (!openBox) return;
-      openBox.classList.remove('open');
-      openBox.setAttribute('aria-expanded', 'false');
-      openBox = null;
-      catsEl.classList.remove('has-open');
-      panel.classList.remove('open');
-      setTimeout(function () { if (!openBox) panel.hidden = true; }, 600);
-    }
-
-    function openCat(box) {
-      if (openBox) { openBox.classList.remove('open'); openBox.setAttribute('aria-expanded', 'false'); }
-      var id = box.getAttribute('data-cat');
-      var list = inCat(id);
-      openBox = box;
-      box.classList.add('open');
-      box.setAttribute('aria-expanded', 'true');
-      catsEl.classList.add('has-open');
-      panel.className = 'cat-panel ' + A.tileClass(id);
-      panel.setAttribute('aria-label', A.categoryLabel(id) + ' projects');
-      panelIn.innerHTML = list.length
-        ? '<div class="cat-grid">' + list.map(cardHTML).join('') + '</div>'
-        : '<p class="cat-empty">' + esc(A.categoryLabel(id)) + ' projects are on the way. Check back soon.</p>';
-      panelIn.querySelectorAll('.cat-card').forEach(function (c, i) { c.style.transitionDelay = (0.2 + i * 0.08) + 's'; });
-      panel.hidden = false;
-      placePanel();
-      void panel.offsetWidth;
-      panel.classList.add('open');
-    }
-
-    catsEl.addEventListener('click', function (e) {
-      var box = e.target.closest('.cat-box');
-      if (!box) return;
-      if (box === openBox) closePanel(); else openCat(box);
-    });
-    window.addEventListener('resize', placePanel);
-    return {
-      relayout: placePanel,
-      open: function (id) {
-        var box = catsEl.querySelector('.cat-box[data-cat="' + id + '"]');
-        if (box && box !== openBox) openCat(box);
-      }
-    };
-  }
-
-  var workCats = setupCats(document.getElementById('cats'), 'cat-panel');
-
-  // Service rows link to Selected work (main.js jumps there) and open the
-  // matching category so its projects are already showing
-  document.querySelectorAll('[data-open-cat]').forEach(function (link) {
-    link.addEventListener('click', function () { workCats.open(link.getAttribute('data-open-cat')); });
-  });
+  document.getElementById('featured').innerHTML = cats.map(featHTML).join('');
 
   // ── Enquiry form ───────────────────────────────────────────
   var form = document.getElementById('enquiry');
@@ -207,7 +127,7 @@
       });
   });
 
-  // ── About: heading highlight and approach steps ────────────
+  // ── About: heading highlight ───────────────────────────────
   var aboutTitle = document.querySelector('.about-title');
   if (aboutTitle) {
     if ('IntersectionObserver' in window) {
@@ -219,27 +139,4 @@
       aboutTitle.classList.add('lit');
     }
   }
-
-  // Steps open on hover where there's a mouse, and on tap on touch screens
-  var canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-  function setStep(step, open) {
-    step.classList.toggle('open', open);
-    step.querySelector('button').setAttribute('aria-expanded', open ? 'true' : 'false');
-  }
-
-  document.querySelectorAll('.step').forEach(function (step) {
-    var btn = step.querySelector('button');
-    if (canHover) {
-      setStep(step, false);
-      // A short pause before opening, so a pointer just passing over doesn't open it
-      var timer;
-      step.addEventListener('mouseenter', function () { timer = setTimeout(function () { setStep(step, true); }, 150); });
-      step.addEventListener('mouseleave', function () { clearTimeout(timer); if (document.activeElement !== btn) setStep(step, false); });
-      btn.addEventListener('focus', function () { setStep(step, true); });
-      btn.addEventListener('blur', function () { if (!step.matches(':hover')) setStep(step, false); });
-    } else {
-      btn.addEventListener('click', function () { setStep(step, !step.classList.contains('open')); });
-    }
-  });
 })();

@@ -137,7 +137,7 @@
       var pick = h('button', {
         class: 'ad-pick', type: 'button', 'aria-current': i === currentIdx ? 'true' : null,
         onclick: function () { currentIdx = i; renderAll(); }
-      }, [thumb, h('span', null, [h('strong', { text: p.title || 'Untitled project' }), h('small', { text: catLabel(p.category) + (p.year ? ', ' + p.year : '') })])]);
+      }, [thumb, h('span', null, [h('strong', { text: p.title || 'Untitled project' }), h('small', { text: catLabel(p.category) + (p.year ? ', ' + p.year : '') + (p.featured ? ' · Featured' : '') })])]);
       var up = h('button', { class: 'ad-icon', type: 'button', 'aria-label': 'Move ' + (p.title || 'project') + ' up', disabled: i === 0, onclick: function () { move(i, -1); } }, [icon(ICON_UP)]);
       var down = h('button', { class: 'ad-icon', type: 'button', 'aria-label': 'Move ' + (p.title || 'project') + ' down', disabled: i === projects.length - 1, onclick: function () { move(i, 1); } }, [icon(ICON_DOWN)]);
       listEl.appendChild(h('li', { class: 'ad-item' + (i === currentIdx ? ' active' : '') }, [pick, up, down]));
@@ -212,7 +212,12 @@
       return h('option', { value: c.id, text: c.label, selected: c.id === p.category });
     }));
     cat.value = p.category;
-    cat.addEventListener('change', function () { p.category = cat.value; setDirty(true); renderList(); renderCover(); });
+    cat.addEventListener('change', function () {
+      p.category = cat.value;
+      // Keep one featured project per category
+      if (p.featured) projects.forEach(function (q) { if (q !== p && q.category === p.category) q.featured = false; });
+      setDirty(true); renderList(); renderCover();
+    });
 
     editorEl.appendChild(h('div', { class: 'ad-grid2' }, [
       field('Project title', titleInput),
@@ -222,6 +227,22 @@
     ]));
 
     editorEl.appendChild(field('Short summary', bind(h('input', { id: 'f-summary', type: 'text', value: p.summary, maxlength: '120' }), p, 'summary'), 'Shown under the project in the grid'));
+
+    // Featured: the one project per category shown in Selected work on the homepage
+    var featBox = h('input', { id: 'f-featured', type: 'checkbox', checked: !!p.featured });
+    featBox.addEventListener('change', function () {
+      if (featBox.checked) projects.forEach(function (q) { if (q !== p && q.category === p.category) q.featured = false; });
+      p.featured = featBox.checked;
+      setDirty(true);
+      renderList();
+    });
+    editorEl.appendChild(h('div', { class: 'ad-check' }, [
+      featBox,
+      h('label', { for: 'f-featured' }, [
+        h('strong', { text: 'Featured in Selected work' }),
+        h('small', { text: 'Shown on the homepage for its category. Ticking this unticks the current featured project in the same category.' })
+      ])
+    ]));
 
     var descInput = bind(h('textarea', { id: 'f-desc', rows: '8' }), p, 'description');
     descInput.value = p.description || '';

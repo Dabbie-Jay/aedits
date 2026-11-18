@@ -1,5 +1,6 @@
 // Managed by admin.html. You can also edit this file by hand.
-// Each project: id (used in the page link), title, client, category, year,
+// Each project: id (used in the page link), title, client, category, featured
+// (true = the one project shown for its category in Selected work), year,
 // summary (one line for the grid), description (blank line between paragraphs),
 // cover (image path or ""), images (gallery: [{ "src": "...", "alt": "..." }]).
 window.AEDITS_PROJECTS = [
@@ -8,6 +9,7 @@ window.AEDITS_PROJECTS = [
     "title": "King's Premium",
     "client": "Soy milk brand",
     "category": "branding",
+    "featured": true,
     "year": "2025",
     "summary": "Logo, brand identity and packaging",
     "description": "King's Premium is a soy milk brand from Owerri, making Soy Milk and Tom Brown blends from soybeans, tiger nuts, groundnuts, dates and grains. The brand needed an identity that felt premium and trustworthy while staying natural and healthy.\n\nThe logo pairs a leaf mark with a classic serif wordmark and a handwritten \"Premium\", framed by two fine lines. A palette of soft Isabelline green, Zinnwaldite brown and Black Chocolate keeps everything earthy and calm, and the tagline \"The royal choice for a healthier you\" ties it together.\n\nThe identity carries across the Soy Milk and Tom Brown packaging, with clear ingredient lists, health benefits and simple directions, so customers know exactly what they are buying and how to use it.",
@@ -40,6 +42,7 @@ window.AEDITS_PROJECTS = [
     "title": "[Project name]",
     "client": "[Client]",
     "category": "social",
+    "featured": true,
     "year": "2026",
     "summary": "Launch campaign for Instagram",
     "description": "[Describe the campaign and what it set out to do.]",
@@ -51,6 +54,7 @@ window.AEDITS_PROJECTS = [
     "title": "[Project name]",
     "client": "[Client]",
     "category": "print",
+    "featured": true,
     "year": "2026",
     "summary": "Event poster and flyers",
     "description": "[Describe the event and the print pieces you designed.]",
@@ -62,6 +66,7 @@ window.AEDITS_PROJECTS = [
     "title": "[Project name]",
     "client": "[Client]",
     "category": "packaging",
+    "featured": true,
     "year": "2025",
     "summary": "Product label design",
     "description": "[Describe the product and the packaging you designed.]",

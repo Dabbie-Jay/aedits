@@ -20,6 +20,25 @@
 
     tileClass: function (id) {
       return ['branding', 'social', 'print', 'packaging'].indexOf(id) > -1 ? id : 'other';
+    },
+
+    // One-line descriptions for each category
+    catDesc: {
+      branding: 'Logos and brand identities',
+      social: 'Campaigns and social media',
+      print: 'Posters, flyers and print',
+      packaging: 'Labels and product packaging'
+    },
+
+    inCategory: function (id) {
+      return window.AEDITS.projects.filter(function (p) { return p.category === id; });
+    },
+
+    // The project shown for a category in Selected work: the one marked
+    // featured, or the first in the category if none is marked
+    featuredIn: function (id) {
+      var list = window.AEDITS.inCategory(id);
+      return list.filter(function (p) { return p.featured; })[0] || list[0] || null;
     }
   };
 

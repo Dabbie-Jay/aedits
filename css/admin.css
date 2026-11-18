@@ -64,3 +64,7 @@ body.admin{font-size:16px;background:var(--bg-soft)}
 .ad-log{margin:0 clamp(16px,3vw,32px) 32px;white-space:pre-line;font-size:14px;color:var(--text-3)}
 .ad-field-err{color:var(--error);font-size:14px;font-weight:600;margin:0}
 .ad-item.active .ad-thumb{box-shadow:0 0 0 2px #FFFFFF}
+.ad-check{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:2px solid var(--lavender);border-radius:8px}
+.ad-check input{flex:none;width:20px;height:20px;min-height:0;margin:2px 0 0;accent-color:var(--primary)}
+.ad-check label{display:flex;flex-direction:column;gap:2px;cursor:pointer}
+.ad-check small{font-size:14px;font-weight:400;color:var(--text-3)}
